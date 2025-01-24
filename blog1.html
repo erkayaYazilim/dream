@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dream Catcher - Blog Yazısı</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <!-- Ana site stil dosyası -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Ek tasarım stil dosyası (Opsiyonel) -->
+    <link rel="stylesheet" href="./assets/css/styles2.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Firebase & app.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="./assets/js/app.js"></script>
+
+    <!-- Inline CSS: Root, Header, Expanding Cards, Blog Yazısı -->
+    <style>
+      /* Root ve Genel Ayarlar */
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Heebo', sans-serif;
+        line-height: 1.6;
+      }
+
+      /* HEADER (Mobil & Masaüstü) */
+      .header {
+        background: var(--viridian-green);
+        padding-block: 20px;
+        height: 88px;
+        overflow: hidden;
+        transition: 0.25s var(--cubic-out);
+      }
+      .header.active {
+        height: 425px;
+        transition-duration: 0.35s;
+      }
+      .header .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        color: var(--white-1);
+        font-size: var(--fs-2);
+        font-weight: var(--fw-600);
+      }
+      .nav-toggle-btn {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .nav-toggle-btn ion-icon {
+        color: var(--white-1);
+        font-size: 35px;
+        --ionicon-stroke-width: 40px;
+      }
+      .nav-toggle-btn .open {
+        display: block;
+      }
+      .nav-toggle-btn .close {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .open {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .close {
+        display: block;
+      }
+      .navbar {
+        width: 100%;
+        padding: 20px 10px;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-1);
+      }
+      .header.active .navbar {
+        opacity: 1;
+        visibility: visible;
+      }
+      .navbar-list {
+        margin-bottom: 15px;
+      }
+      .navbar-link {
+        color: var(--white-1);
+        font-size: var(--fs-5);
+        font-weight: var(--fw-500);
+        padding-block: 10px 0;
+        border-bottom: 2px solid transparent;
+      }
+      .navbar-link:is(:hover, :focus) {
+        border-color: var(--white-1);
+      }
+      @media screen and (min-width: 992px) {
+        .nav-toggle-btn {
+          display: none;
+        }
+        .header,
+        .header.active {
+          height: unset;
+        }
+        .navbar {
+          all: unset;
+          display: flex;
+          align-items: center;
+          flex-grow: 1;
+        }
+        .navbar-list {
+          margin-bottom: 0;
+          margin-inline: auto;
+          display: flex;
+          gap: 30px;
+        }
+      }
+
+      /* Expanding Cards (Üst Görsel Kartlar) */
+      @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+      .container-expanding {
+        display: flex;
+        width: 90vw;
+        margin: 0 auto;
+      }
+      .panel {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 40vh;
+        border-radius: 50px;
+        color: #fff;
+        cursor: pointer;
+        flex: 0.5;
+        margin: 10px;
+        position: relative;
+        transition: all 700ms ease-in;
+      }
+      .panel h3 {
+        font-size: 24px;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        margin: 0;
+        opacity: 0;
+      }
+      .panel.active {
+        flex: 5;
+      }
+      .panel.active h3 {
+        opacity: 1;
+        transition: opacity 0.3s ease-in 0.4s;
+      }
+      @media (max-width: 480px) {
+        .container-expanding {
+          width: 100vw;
+        }
+        .panel:nth-of-type(4),
+        .panel:nth-of-type(5) {
+          display: none;
+        }
+      }
+
+      /* Blog Yazısı İçeriği Bölümü */
+      .blog-article-section {
+        position: relative;
+        background: url('./assets/images/transparent-bg.png') no-repeat center center/cover;
+        padding: 80px 0;
+        background-color: white;
+      }
+      .blog-article-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.4);
+        z-index: 1;
+      }
+      .blog-article-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .blog-article-content h1,
+      .blog-article-content h2,
+      .blog-article-content h3,
+      .blog-article-content p {
+        margin-bottom: 20px;
+      }
+      .article-meta {
+        font-size: 1.2rem;
+        color: #080808;
+        margin-bottom: 30px;
+      }
+
+      .whatsapp-fixed {
+        position: fixed;
+        left: 20px;
+        bottom: 20px;
+        background-color: #ffffff;
+        color: #25d366;
+        padding: 10px 15px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        transition: background-color 0.3s ease;
+      }
+
+      .whatsapp-fixed:hover {
+        background-color: #1ebe5d;
+      }
+
+      .whatsapp-fixed img {
+        width: 24px;
+        height: 24px;
+      }
+
+      .whatsapp-fixed span {
+        /* Mobilde simge gösterip metni gizlemek için */
+        display: none;
+      }
+
+      @media (min-width: 768px) {
+        .whatsapp-fixed span {
+          display: inline;
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    </style>
+  </head>
+  <body id="top">
+    <!-- HEADER -->
+    <header class="header" data-header>
+      <div class="container">
+        <a href="index.html" class="logo-link" style="display: flex; align-items: center; gap: 10px;">
+            <img src="favicon.svg" alt="Dream Catcher Logo" style="width: 40px; height: auto;">
+            <h1 class="logo" style="margin: 0; font-size: 24px; color: #fff;">Dream Catcher</h1>
+          </a>
+        <!-- Hamburger Butonu -->
+        <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+          <ion-icon name="menu-outline" class="open"></ion-icon>
+          <ion-icon name="close-outline" class="close"></ion-icon>
+        </button>
+        <!-- Navbar -->
+        <nav class="navbar">
+            <ul class="navbar-list">
+              <!-- Menü linkleri ilgili bölüm id'lerine yönlendiriliyor -->
+              <li><a href="index.html" class="navbar-link">Anasayfa</a></li>
+              <li><a href="index.html#about" class="navbar-link">Hakkımızda</a></li>
+              <li><a href="index.html#popular" class="navbar-link">Turlar</a></li>
+              <li><a href="index.html#destination" class="navbar-link">Aktiviteler</a></li>
+              <li><a href="index.html#blog" class="navbar-link">Blog</a></li>
+              <li><a href="index.html#footer" class="navbar-link">İletişim</a></li>
+            </ul>
+            <!-- Hemen Rezervasyon butonu; WhatsApp üzerinden rezervasyon yapmak için hazır mesaj gönderir -->
+            <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20rezervasyon%20yaptırmak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" class="btn btn-secondary">Hemen Rezervasyon</a>
+    
+          </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="section hero" style="background-image: url('./assets/images/blog-hero.jpg'); background-size: cover;">
+      <div class="container">
+        <div class="hero-content">
+          <p class="section-subtitle">En Yeni Blog Yazısı</p>
+          <h2 class="hero-title"> Kapadokya Balon Turu İçin En İyi İpuçları?</h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPANDING CARDS -->
+    <section class="expanding-cards-section">
+      <div class="container-expanding">
+        <div class="panel active" style="background-image: url('assets/images/balon1.jpg')">
+          <h3>Gökyüzü Macerası</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/balon2.jpg')">
+          <h3>Balon Keyfi</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/balon3.jpg')">
+          <h3>Manzara Seyri</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/balon4.jpg')">
+          <h3>Gün Doğumu</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/balon5.jpg')">
+          <h3>Huzur Yolculuğu</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG İÇERİĞİ -->
+    <section class="blog-article-section">
+      <div class="blog-article-overlay"></div>
+      <div class="container">
+        <div class="blog-article-content">
+          <header>
+            <h1 class="article-title">Kapadokya Balon Turu İçin En İyi İpuçları?</h1>
+            <p class="article-meta">
+              <time datetime="2025-03-15">01 Ocak 2025</time> &mdash; Yazar: <strong>Ahmet Yılmaz</strong>
+            </p>
+          </header>
+          <figure class="article-banner">
+            <img src="./assets/images/balon.jpg" alt="Kapadokya Manzarası" class="img-cover" />
+            <figcaption>Kapadokya’nın peribacaları arasında unutulmaz anlar.</figcaption>
+          </figure>
+          <section class="article-content">
+            <p>
+              Kapadokya’nın masalsı coğrafyasında gökyüzüne açılan o büyülü kapı, ruhunuzun derinliklerine işleyen, kelimelere sığmayan bir şiir gibidir. Gökyüzüne süzülen balonlar, her biri kendi hikayesini fısıldarcasına, sizlere unutulmaz bir serüven vaat eder. Bu yazıda, Kapadokya balon turu deneyiminizi taçlandıracak ipuçlarını, edebi bir dille ve samimi bir yazarın kaleminden dökülür gibi, detaylarıyla sizlerle paylaşıyorum.
+            </p>
+            <h2>I. Hazırlık: Rüyaya Adım Atmanın İlk Anları</h2>
+            <h3>1.1 Erken Rezervasyonun Önemi</h3>
+            <p>
+              Kapadokya’nın mistik atmosferinde balon turlarına katılmak, özenle hazırlanması gereken bir davettir. Rezervasyonunuzu erken yaparak, bu eşsiz deneyimin ilk ışıklarıyla buluşmanızın kapısını aralayabilirsiniz. Lisanslı ve güvenilir tur firmalarını tercih etmek, hem güvenliğinizi sağlar hem de rüya gibi bir yolculuğun temellerini sağlamlaştırır.
+            </p>
+            <h3>1.2 Esnek ve Detaylı Planlama</h3>
+            <p>
+              Her yolculuk, küçük detaylarda hayat bulur; bu nedenle hazırlıklarınızı titizlikle yapmak, masalınızın başlangıcını mükemmelleştirecektir. Hava koşullarını yakından takip etmek, rüzgarın ve güneşin oyunlarına uyum sağlayabilmek için esnek planlar yapmanız önemlidir. Eğer gökyüzü kapılarınızı kapatsa, Kapadokya’nın yer altı şehirleri, vadileri ve tarihi mekanları, maceranızın diğer renklerini keşfetmeniz için sizi bekler.
+            </p>
+            <h2>II. Uyanış ve Gökyüzüne İlk Adım</h2>
+            <h3>2.1 Güneşin İlk Öpücüğü</h3>
+            <p>
+              Sabahın erken saatlerinde, uykunun en derin kıyılarından sıyrılırken, Kapadokya’nın gökyüzündeki görüntüsü sizi yepyeni bir dünyaya davet eder. Erken kalkmanın büyüsü; hala uykudan yeni uyanmış, ama gözlerinizde gün doğumunun umut dolu ışıltısını barındıran anlar, ömür boyu hafızalarınızda yer edecek.
+            </p>
+            <p>
+              Kat kat giyinmek; mevsimin getirdiği soğukluk ile sıcaklığın arasında ince bir denge kurmanıza yardımcı olur. Doğru seçilmiş şık ve rahat aksesuarlar, bu yolculuğun her anında size eşlik edecek.
+            </p>
+            <h3>2.2 Rahat ve Fonksiyonel Donanımlar</h3>
+            <p>
+              Gökyüzüne yükselirken, yanınızda taşıdığınız her aksesuar ve kıyafet, bu masalsı deneyiminizin ayrılmaz bir parçası olur. İniş ve kalkış anlarında sağlam adımlar atabilmek için kaymayı önleyen rahat ayakkabılar tercih edin. Güneşin ilk ışıklarıyla birlikte UV korumalı gözlükleriniz, sizi sadece korumakla kalmayıp aynı zamanda stilinize de zarif bir dokunuş katar.
+            </p>
+            <h2>III. Gökyüzüyle Bütünleşen Anlar</h2>
+            <h3>3.1 Uçuşa Başlamak: Bir Masalın İlk Satırları</h3>
+            <p>
+              Balonun sepetine adımınızı attığınız anda, yerden uzaklaşıp gökyüzüne doğru nazikçe yükselirken, sanki bütün evren size fısıldamaya başlar. Gökyüzünde süzülürken, rüzgarın hafif uğultusunu ve kuşların melodik şarkılarını dinleyin; bu sesler, binlerce yıllık doğa ve medeniyetin ortak şarkısı gibidir.
+            </p>
+            <p>
+              Anı ölümsüzleştirmek için elinizdeki kamera ya da telefonunuzla çekim yapabilirsiniz; ancak bilin ki en güzel kareler, gözlerinizde ve kalbinizde yer eden o tarifsiz anılardır.
+            </p>
+            <h3>3.2 Güvenlik ve Bilinçli Deneyim</h3>
+            <p>
+              Gökyüzünün engin maviliklerinde süzülürken, pilotunuzun verdiği güvenlik talimatlarını dikkatle dinleyin. Her direktif, bu masalsı yolculuğun sağlıklı ve keyifli geçmesini sağlayacak; kemerlerinizi bağlayarak, her türlü olasılığa karşı hazır olun. Güvenlik, anın tam anlamıyla yaşanabilmesi için temel bir unsurdur.
+            </p>
+            <h2>IV. Kapadokya’nın Zamanın Ötesindeki Büyüsü</h2>
+            <h3>4.1 Tarih ve Kültürün Gökyüzündeki Yansıması</h3>
+            <p>
+              Gökyüzüne yükseldiğinizde, Kapadokya’nın yüzyıllara meydan okuyan peribacaları, yer altı şehirleri ve tarihi dokusu, size adeta bir zaman yolculuğunun kapılarını aralar. Her taş, her yapı; geçmişin ve efsanelerin sessiz tanıkları olarak, kalbinizde yeni anılar biriktirmenize vesile olur.
+            </p>
+            <h3>4.2 Lezzet Dolu Duraklar</h3>
+            <p>
+              Balon turunuzun ardından, Kapadokya’nın yöresel lezzetlerini keşfetmek, bu deneyimi tamamlayan en tatlı dokunuştur. Testi kebabı, mantı ve yerel şaraplar; bu coğrafyanın büyüsünü damağınızda hissettiren unutulmaz tatlar olarak karşınızda yer alır.
+            </p>
+            <h2>V. Ekstra İpuçları: Masalınızın Eksik Parçaları</h2>
+            <h3>5.1 Seyahat Sigortasının Önemi</h3>
+            <p>
+              Her masalın bilinen bir gerçeği vardır: Beklenmedik anlar olabilir. Kapsamlı bir seyahat sigortası, rüzgarın sert estiği, hava koşullarının değişken olduğu anlarda size görünmez bir kalkan görevi görerek, maceranızın yolunu aydınlatır.
+            </p>
+            <h3>5.2 Alternatif Aktivitelerle Zenginleşen Bir Yolculuk</h3>
+            <p>
+              Kapadokya’da gökyüzüne yükselmek, bölgenin sunduğu tek deneyim değildir. Eğer gökyüzü size kapılarını kapatsa, vadilerde yürüyüşler, at turları ve tarihi mekanlarda yapacağınız keşifler, maceranızı başka tatlarla renklendirecektir.
+            </p>
+            <h3>5.3 Anılarınızın Kalıcı Olması</h3>
+            <p>
+              Deneyiminizi kalıcı hale getirmek için, uçuş sonrası hislerinizi bir günlük ya da dijital not defterine yazın. Sosyal medya ve blog paylaşımı yaparak, bu eşsiz anların ilham kaynağı olmasını sağlayabilirsiniz.
+            </p>
+            <h2>VI. Masalsı Bir Yolculuğun Son Sözleri</h2>
+            <p>
+              Kapadokya’nın üzerinde süzülen her balon, ömrünüzde bir kez yaşanabilecek eşsiz anların simgesidir. Gökyüzüne açılan bu kapı, sadece bir macera değil; kalbinizde ömür boyu sürecek bir hatıraya dönüşen, edebi bir eserin satır aralarına sızmış gibi narin ve dokunaklı bir deneyim sunar.
+            </p>
+            <p>
+              Yolculuğunuz boyunca, sabahın ilk ışıklarıyla başlayan bir serüvene adım atın, gökyüzünde kaybolan anlarınızla yeniden doğun. Her fısıldayan rüzgar, her parıldayan yıldız, size kendi hikayenizi anlatır; bu hikaye, yaşam öykünüzün en değerli mısralarından biri olacaktır.
+            </p>
+            <p>
+              Eğer yüreğinizin derinliklerinde tarifsiz bir özgürlük arıyorsanız, bu masalsı yolculuğu ertelemeyin. Gökyüzünün sonsuz maviliklerine doğru attığınız her adım, hayatınızın en anlamlı ve en dokunaklı anılarına dönüşecektir.  
+              Gönlünüzdeki cesareti, aklınızdaki planları ve yüreğinizde sakladığınız umut dolu hayalleri yanınızda taşıyarak, geçmişin, bugünün ve geleceğin büyülü dokusu arasında yeniden keşfe çıkın.
+            </p>
+            <p>
+              İşte bu yüzden, Kapadokya balon turu yalnızca fiziksel bir yolculuk değil; aynı zamanda ruhunuzun derinliklerindeki en güzel masalların can bulmuş hali, kelimelere sığmayan o tarifsiz duyguların dansıdır.
+            </p>
+            <p>
+              Gökyüzünde süzülen her balon, yaşamın ve aşkın en derin öykülerini size fısıldasın. İyi uçuşlar, unutulmaz anılar ve bitmek bilmeyen ilham dolu günler dilerim!
+            </p>
+          </section>
+          <footer class="article-footer">
+            <p class="article-tags">
+              Etiketler:
+              <a href="#">Kapadokya</a>,
+              <a href="#">Turlar</a>,
+              <a href="#">Keşif</a>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+      <div class="container">
+        <div class="footer-top">
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Popüler Aktiviteler</p></li>
+            <li><a href="#" class="footer-link">Balon Turları</a></li>
+            <li><a href="#" class="footer-link">At Turları</a></li>
+            <li><a href="#" class="footer-link">ATV Turları</a></li>
+            <li><a href="#" class="footer-link">Jeep Safari</a></li>
+            <li><a href="#" class="footer-link">Klasik Araba Turları</a></li>
+            <li><a href="#" class="footer-link">Spa & Masaj</a></li>
+          </ul>
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Kategoriler</p></li>
+            <li><a href="#" class="footer-link">Macera</a></li>
+            <li><a href="#" class="footer-link">Kültür & Tarih</a></li>
+            <li><a href="#" class="footer-link">Doğa</a></li>
+            <li><a href="#" class="footer-link">Aile</a></li>
+            <li><a href="#" class="footer-link">Romantik</a></li>
+          </ul>
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Hızlı Erişim</p></li>
+            <li><a href="#" class="footer-link">Hakkımızda</a></li>
+            <li><a href="#" class="footer-link">İletişim</a></li>
+            <li><a href="#" class="footer-link">Turlar</a></li>
+            <li><a href="#" class="footer-link">Rezervasyon</a></li>
+            <li><a href="#" class="footer-link">Şartlar & Koşullar</a></li>
+          </ul>
+          <div class="footer-list">
+            <p class="footer-list-title">Bültene Kaydol</p>
+            <p class="newsletter-text">
+              Son fırsatlar, haberler ve ipuçları için mail ile bilgilendirme almak için bültenimize abone olun.
+            </p>
+            <form id="newsletterForm" class="newsletter-form">
+              <input type="email" name="email" required placeholder="E-posta adresi" class="newsletter-input">
+              <button type="submit" class="btn btn-primary">Abone Ol</button>
+            </form>
+            <p id="newsletterMessage" class="form-info"></p>
+          </div>
+          
+        </div>
+        <div class="footer-bottom">
+          <a href="#" class="logo">Dream Catcher</a>
+          <p class="copyright">
+            &copy; 2025 <a href="#" class="copyright-link">DreamCatcher</a>. Tüm Hakları Saklıdır.
+          </p>
+          <ul class="social-list">
+            <li><a href="#" class="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-twitter"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-linkedin"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-google"></ion-icon></a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <div class="whatsapp-container">
+        <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20detaylı%20bilgi%20almak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" target="_blank"
+          class="whatsapp-fixed" aria-label="WhatsApp ile iletişime geçin">
+          <!-- WhatsApp simgenizin dosya yolunu güncelleyiniz -->
+          <img src="./assets/images/wplogo.png" alt="WhatsApp">
+          <span>Bilgi Alabilir miyim?</span>
+        </a>
+      </div>
+
+    <!-- Custom JS Link -->
+    <!-- Mobil Menü Açma/Kapatma JS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const navToggleBtn = document.querySelector("[data-nav-toggle-btn]");
+        const headerEl = document.querySelector("[data-header]");
+        
+        if (navToggleBtn && headerEl) {
+          navToggleBtn.addEventListener("click", () => {
+            headerEl.classList.toggle("active");
+            console.log("Header sınıfları:", headerEl.classList);
+          });
+        } else {
+          console.error("Hamburger butonu veya header elementi bulunamadı!");
+        }
+      });
+    </script>
+
+    <!-- Expanding Cards JS -->
+    <script>
+      const panels = document.querySelectorAll(".panel");
+      panels.forEach(panel => {
+        panel.addEventListener("click", () => {
+          panels.forEach(p => p.classList.remove("active"));
+          panel.classList.add("active");
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const newsletterForm = document.getElementById("newsletterForm");
+        const newsletterMessage = document.getElementById("newsletterMessage");
+    
+        newsletterForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+    
+          const emailInput = newsletterForm.querySelector('input[name="email"]');
+          const email = emailInput.value.trim();
+    
+          if (validateEmail(email)) {
+            // Realtime Database'a e-posta kaydet
+            database.ref("newsletterSubscribers").push({
+              email: email,
+              subscribedAt: Date.now(), // Timestamp
+            })
+            .then(() => {
+              newsletterMessage.textContent = "Başarıyla abone oldunuz!";
+              newsletterMessage.style.color = "green";
+              newsletterForm.reset();
+            })
+            .catch((error) => {
+              console.error("Belge ekleme hatası: ", error);
+              newsletterMessage.textContent = "Bir hata oluştu. Lütfen tekrar deneyin.";
+              newsletterMessage.style.color = "red";
+            });
+          } else {
+            newsletterMessage.textContent = "Lütfen geçerli bir e-posta adresi girin.";
+            newsletterMessage.style.color = "red";
+          }
+        });
+    
+        function validateEmail(email) {
+          // Basit e-posta doğrulama regex'i
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return re.test(email);
+        }
+      });
+    </script>
+  </body>
+</html>

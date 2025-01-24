@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Catcher - Kapadokya Turları</title>
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  
+    <!-- Firebase & app.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="assets/js/app.js"></script>
+    <style>
+      /* Kayan animasyon için kapsayıcı */
+      .whatsapp-container {
+        position: fixed;
+        left: 5px;
+        bottom: 5px;
+        z-index: 1000;
+        animation: slideIn 0.8s ease-out forwards;
+      }
+    
+      /* Butonun temel stil ve titreşim animasyonu */
+      .whatsapp-fixed {
+        background-color: #ffffff;
+        color: #25d366;
+        padding: 10px 15px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        animation: shake 3s ease-in-out infinite;
+      }
+    
+      .whatsapp-fixed:hover {
+        background-color: #1ebe5d;
+        transform: scale(1.05);
+      }
+    
+      .whatsapp-fixed img {
+        width: 24px;
+        height: 24px;
+      }
+    
+      .whatsapp-fixed span {
+        /* Mobilde metni gizleyip simge gösterilir */
+        display: none;
+      }
+    
+      @media (min-width: 768px) {
+        .whatsapp-fixed span {
+          display: inline;
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    
+      /* Slide In Animasyonu: Kayan giriş efekti */
+      @keyframes slideIn {
+        from {
+          transform: translateX(-30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    
+      /* Shake Animasyonu: 3s'lik döngüde kısa titreşim */
+      @keyframes shake {
+        0%, 80%, 100% {
+          transform: translateX(0);
+        }
+        85% {
+          transform: translateX(-5px);
+        }
+        90% {
+          transform: translateX(5px);
+        }
+        95% {
+          transform: translateX(0);
+        }
+      }
+
+
+    </style>
+    
+    </style>
+    
+
+</head>
+
+<body id="top">
+
+  <!-- 
+    - #HEADER
+  -->
+  <header class="header" data-header>
+    <div class="container">
+
+      <a href="index.html" class="logo-link" style="display: flex; align-items: center; gap: 10px;">
+        <img src="favicon.svg" alt="Dream Catcher Logo" style="width: 40px; height: auto;">
+        <h1 class="logo" style="margin: 0; font-size: 24px; color: #fff;">Dream Catcher</h1>
+      </a>
+      
+
+      <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+        <ion-icon name="menu-outline" class="open"></ion-icon>
+        <ion-icon name="close-outline" class="close"></ion-icon>
+      </button>
+
+      <nav class="navbar">
+        <ul class="navbar-list">
+          <!-- Menü linkleri ilgili bölüm id'lerine yönlendiriliyor -->
+          <li><a href="#hero" class="navbar-link">Anasayfa</a></li>
+          <li><a href="#about" class="navbar-link">Hakkımızda</a></li>
+          <li><a href="#popular" class="navbar-link">Turlar</a></li>
+          <li><a href="#destination" class="navbar-link">Aktiviteler</a></li>
+          <li><a href="#blog" class="navbar-link">Blog</a></li>
+          <li><a href="#footer" class="navbar-link">İletişim</a></li>
+        </ul>
+        <!-- Hemen Rezervasyon butonu; WhatsApp üzerinden rezervasyon yapmak için hazır mesaj gönderir -->
+        <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20rezervasyon%20yaptırmak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" class="btn btn-secondary">Hemen Rezervasyon</a>
+
+      </nav>
+
+    </div>
+  </header>
+
+
+  <main>
+    <article>
+
+      <!-- 
+        - #HERO
+      -->
+      <section  id="hero" class="section hero"
+        style="background-image: url('./assets/images/hero-bg-bottom.png'), url('./assets/images/hero-bg-top.png')">
+        <div class="container">
+
+          <img src="./assets/images/shape-1.png" width="61" height="61" alt="Vector Shape" class="shape shape-1">
+          <img src="./assets/images/shape-2.png" width="56" height="74" alt="Vector Shape" class="shape shape-2">
+          <img src="./assets/images/shape-3.png" width="57" height="72" alt="Vector Shape" class="shape shape-3">
+
+          <div class="hero-content">
+            <p class="section-subtitle">Kapadokya’yı Keşfedin</p>
+            <h2 class="hero-title">Unutulmaz Deneyimlerin Adresi</h2>
+
+            <p class="hero-text">
+              Dream Catcher ile Kapadokya’nın eşsiz coğrafyasında balon, at, ATV, jeep safari ve klasik araba turlarıyla
+              maceraya hazır olun. Ayrıca spa masaj salonumuzda dinlenip yenilenebilirsiniz.
+            </p>
+
+            <div class="btn-group">
+              <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20detaylı%20bilgi%20almak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?
+              " class="btn btn-primary">İletişime Geçin</a>
+              <a href="#about" class="btn btn-outline">Daha Fazla Bilgi</a>
+            </div>
+          </div>
+
+          <figure class="hero-banner">
+            <img src="./assets/images/hero-banner.png" width="686" height="812" loading="lazy" 
+              alt="Nevşehir Kapadokya Balon" class="w-100">
+          </figure>
+
+        </div>
+      </section>
+
+
+      <!-- 
+        - #DESTINATION (Aktiviteler) - ARKA PLANDA VİDEO OYNATILAN KARTLAR
+      -->
+      <section id="destination" class="section destination">
+        <div class="container">
+
+          <p class="section-subtitle">Aktiviteler</p>
+          <h2 class="h2 section-title">Dream Catcher ile Yapılacaklar</h2>
+
+          <ul class="destination-list">
+
+            <!-- Balon Turu -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline 
+                    poster="./assets/images/gundogumu.jpg">
+                    <source src="./assets/images/kalitesizbalon.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">Balon Turu</p>
+                  <h3 class="h3 card-title">Gün Doğumunda Kapadokya</h3>
+                </div>
+              </a>
+            </li>
+
+            <!-- At Turu -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline
+                    poster="./assets/images/atturu.jpg">
+                    <source src="./assets/images/kalitesizat.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">At Turu</p>
+                  <h3 class="h3 card-title">Peri Bacaları Eteklerinde</h3>
+                </div>
+              </a>
+            </li>
+
+            <!-- ATV Turu -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline
+                    poster="./assets/images/atvturu.jpg">
+                    <source src="./assets/images/kalitesizatv.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">ATV Turu</p>
+                  <h3 class="h3 card-title">Macera Dolu Dakikalar</h3>
+                </div>
+              </a>
+            </li>
+
+            <!-- Jeep Safari -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline
+                    poster="./assets/images/jeepturu.jpg">
+                    <source src="./assets/images/kalitesizjeep.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">Jeep Safari</p>
+                  <h3 class="h3 card-title">Off-Road Heyecanı</h3>
+                </div>
+              </a>
+            </li>
+
+            <!-- Klasik Araba Turu -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline
+                    poster="./assets/images/klasikarabaturu.jpg">
+                    <source src="./assets/images/kalitesizklasik.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">Klasik Araba Turu</p>
+                  <h3 class="h3 card-title">Nostaljik Bir Yolculuk</h3>
+                </div>
+              </a>
+            </li>
+
+            <!-- Spa Masaj Salonu -->
+            <li>
+              <a href="#" class="destination-card">
+                <figure class="card-banner">
+                  <video class="card-video" autoplay loop muted playsinline
+                    poster="./assets/images/spamasaj.jpg">
+                    <source src="./assets/images/spamasaj.mp4" type="video/mp4">
+                    Tarayıcınız video etiketini desteklemiyor.
+                  </video>
+                </figure>
+                <div class="card-content">
+                  <p class="card-subtitle">Spa & Masaj</p>
+                  <h3 class="h3 card-title">Rahatlamanın Anahtarı</h3>
+                </div>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+      </section>
+
+
+      <!-- 
+        - #POPULAR (Öne Çıkan Turlar)
+      -->
+      <section id="popular" class="section popular">
+        <div class="container">
+          <p class="section-subtitle">Öne Çıkan Turlar</p>
+          <h2 class="h2 section-title">En Popüler Dream Catcher Turları</h2>
+          <!-- Realtime Database üzerinden dinamik veriler eklenecek -->
+          <ul class="popular-list" id="tourList"></ul>
+        </div>
+      </section>
+      <!-- 
+        - #ABOUT
+      -->
+      <section id="about" class="section about">
+        <div class="container">
+
+          <div class="about-content">
+            <p class="section-subtitle">Hakkımızda</p>
+            <h2 class="h2 section-title">Kapadokya’nın Tüm Turlarını Dream Catcher ile Keşfedin</h2>
+
+            <p class="about-text">
+              Dream Catcher olarak, Kapadokya’daki en popüler turları güvenilir ve profesyonel ekibimizle sunuyoruz.
+              Balon, at, ATV, jeep safari, klasik araba turları ve rahatlamanız için spa masaj salonumuzla unutulmaz bir
+              deneyim için bize katılın.
+            </p>
+
+            <ul class="about-list">
+              <li class="about-item">
+                <div class="about-item-icon">
+                  <ion-icon name="compass"></ion-icon>
+                </div>
+                <div class="about-item-content">
+                  <h3 class="h3 about-item-title">Deneyimli Rehberler</h3>
+                  <p class="about-item-text">
+                    Kapadokya hakkında derin bilgiye sahip, bölgeyi adım adım tanıtan profesyonel rehberlerimiz var.
+                  </p>
+                </div>
+              </li>
+
+              <li class="about-item">
+                <div class="about-item-icon">
+                  <ion-icon name="briefcase"></ion-icon>
+                </div>
+                <div class="about-item-content">
+                  <h3 class="h3 about-item-title">Uygun Fiyatlar</h3>
+                  <p class="about-item-text">
+                    Her bütçeye uygun tur paketleriyle Kapadokya’yı doyasıya keşfetmenizi sağlıyoruz.
+                  </p>
+                </div>
+              </li>
+
+              <li class="about-item">
+                <div class="about-item-icon">
+                  <ion-icon name="umbrella"></ion-icon>
+                </div>
+                <div class="about-item-content">
+                  <h3 class="h3 about-item-title">Güvenli ve Konforlu</h3>
+                  <p class="about-item-text">
+                    Tüm turlarımızda güvenlik önlemleri en üst düzeydedir; siz sadece keyfinize odaklanın!
+                  </p>
+                </div>
+              </li>
+            </ul>
+
+            <a href="#" class="btn btn-primary">Şimdi Rezervasyon Yap</a>
+
+          </div>
+
+          <figure class="about-banner">
+            <img src="./assets/images/about-banner.png" width="756" height="842" loading="lazy"
+              alt="Kapadokya Manzarası" class="w-100">
+          </figure>
+
+        </div>
+      </section>
+
+
+      <!-- 
+        - #BLOG
+      -->
+      <section id="blog" class="section blog">
+        <div class="container">
+
+          <p class="section-subtitle">Blog Yazıları</p>
+          <h2 class="h2 section-title">En Yeni Haberler & Makaleler</h2>
+
+          <ul class="blog-list">
+
+            <li>
+              <div class="blog-card">
+                <figure class="card-banner">
+                  <a href="#">
+                    <img src="./assets/images/balon.jpg" width="740" height="518" loading="lazy"
+                      alt="Balon Turu İpuçları" class="img-cover">
+                  </a>
+                  <span class="card-badge">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <time datetime="2025-01-01">01 Oca</time>
+                  </span>
+                </figure>
+
+                <div class="card-content">
+                  <div class="card-wrapper">
+                    <div class="author-wrapper">
+                      <figure class="author-avatar">
+                        <img src="./assets/images/author-avatar.png" width="30" height="30" alt="Ahmet Yılmaz">
+                      </figure>
+                      <div>
+                        <a href="blog1.html" class="author-name">Ahmet Yılmaz</a>
+                        <p class="author-title">Rehber</p>
+                      </div>
+                    </div>
+                    <time class="publish-time" datetime="10:30">10:30</time>
+                  </div>
+
+                  <h3 class="card-title">
+                    <a href="blog1.html">
+                      Kapadokya Balon Turu İçin En İyi İpuçları
+                    </a>
+                  </h3>
+
+                  <a href="blog1.html" class="btn-link">
+                    <span>Devamını Oku</span>
+                    <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+                  </a>
+                </div>
+              </div>
+            </li>
+
+            <li>
+              <div class="blog-card">
+                <figure class="card-banner">
+                  <a href="blog2.html">
+                    <img src="./assets/images/jeep.jpg" width="740" height="518" loading="lazy"
+                      alt="Jeep Safari Önerileri" class="img-cover">
+                  </a>
+                  <span class="card-badge">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <time datetime="2025-01-05">05 Oca</time>
+                  </span>
+                </figure>
+
+                <div class="card-content">
+                  <div class="card-wrapper">
+                    <div class="author-wrapper">
+                      <figure class="author-avatar">
+                        <img src="./assets/images/author-avatar.png" width="30" height="30" alt="Zeynep Koç">
+                      </figure>
+                      <div>
+                        <a href="blog2.html" class="author-name">Zeynep Koç</a>
+                        <p class="author-title">Blog Yazarı</p>
+                      </div>
+                    </div>
+                    <time class="publish-time" datetime="09:00">09:00</time>
+                  </div>
+
+                  <h3 class="card-title">
+                    <a href="blog2.html">
+                      Jeep Safari Turlarında Dikkat Edilmesi Gerekenler
+                    </a>
+                  </h3>
+
+                  <a href="blog2.html" class="btn-link">
+                    <span>Devamını Oku</span>
+                    <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+                  </a>
+                </div>
+              </div>
+            </li>
+
+            <li>
+              <div class="blog-card">
+                <figure class="card-banner">
+                  <a href="blog.html">
+                    <img src="./assets/images/spa.jpg" width="740" height="518" loading="lazy"
+                      alt="Spa Masajında Rahatlama Rehberi" class="img-cover">
+                  </a>
+                  <span class="card-badge">
+                    <ion-icon name="time-outline"></ion-icon>
+                    <time datetime="2025-01-10">10 Oca</time>
+                  </span>
+                </figure>
+
+                <div class="card-content">
+                  <div class="card-wrapper">
+                    <div class="author-wrapper">
+                      <figure class="author-avatar">
+                        <img src="./assets/images/author-avatar.png" width="30" height="30" alt="Murat Demir">
+                      </figure>
+                      <div>
+                        <a href="blog.html" class="author-name">Murat Demir</a>
+                        <p class="author-title">Misafir Yorumcusu</p>
+                      </div>
+                    </div>
+                    <time class="publish-time" datetime="11:00">11:00</time>
+                  </div>
+
+                  <h3 class="card-title">
+                    <a href="blog.html">
+                      Spa & Masaj ile Yenilenmenin Püf Noktaları
+                    </a>
+                  </h3>
+
+                  <a href="blog.html" class="btn-link">
+                    <span>Devamını Oku</span>
+                    <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+                  </a>
+                </div>
+              </div>
+            </li>
+
+          </ul>
+
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+
+  <!-- 
+    - #FOOTER
+  -->
+  <footer id="footer" class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+    <div class="container">
+
+      <div class="footer-top">
+
+        <ul class="footer-list">
+          <li>
+            <p class="footer-list-title">Popüler Aktiviteler</p>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Balon Turları</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">At Turları</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">ATV Turları</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Jeep Safari</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Klasik Araba Turları</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Spa & Masaj</a>
+          </li>
+        </ul>
+
+        <ul class="footer-list">
+          <li>
+            <p class="footer-list-title">Kategoriler</p>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Macera</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Kültür & Tarih</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Doğa</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Aile</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Romantik</a>
+          </li>
+        </ul>
+
+        <ul class="footer-list">
+          <li>
+            <p class="footer-list-title">Hızlı Erişim</p>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Hakkımızda</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">İletişim</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Turlar</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Rezervasyon</a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">Şartlar & Koşullar</a>
+          </li>
+        </ul>
+
+        <div class="footer-list">
+          <p class="footer-list-title">Bültene Kaydol</p>
+          <p class="newsletter-text">
+            Son fırsatlar, haberler ve ipuçları için mail ile bilgilendirme almak için bültenimize abone olun.
+          </p>
+          <form id="newsletterForm" class="newsletter-form">
+            <input type="email" name="email" required placeholder="E-posta adresi" class="newsletter-input">
+            <button type="submit" class="btn btn-primary">Abone Ol</button>
+          </form>
+          <p id="newsletterMessage" class="form-info"></p>
+        </div>
+        
+
+      </div>
+
+      <div class="footer-bottom">
+        <a href="#" class="logo">Dream Catcher</a>
+        <p class="copyright">
+          &copy; 2025 <a href="#" class="copyright-link">DreamCatcher</a>. Tüm Hakları Saklıdır.
+        </p>
+
+        <ul class="social-list">
+          <li>
+            <a href="#" class="social-link">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="social-link">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="social-link">
+              <ion-icon name="logo-instagram"></ion-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="social-link">
+              <ion-icon name="logo-linkedin"></ion-icon>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="social-link">
+              <ion-icon name="logo-google"></ion-icon>
+            </a>
+          </li>
+        </ul>
+
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- 
+    - #GO TO TOP
+  -->
+  <a href="#top" class="go-top" data-go-top aria-label="Go To Top">
+    <ion-icon name="chevron-up-outline"></ion-icon>
+  </a>
+
+<!-- WhatsApp Sabit Butonu -->
+<div class="whatsapp-container">
+  <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20detaylı%20bilgi%20almak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" target="_blank"
+    class="whatsapp-fixed" aria-label="WhatsApp ile iletişime geçin">
+    <!-- WhatsApp simgenizin dosya yolunu güncelleyiniz -->
+    <img src="./assets/images/wplogo.png" alt="WhatsApp">
+    <span>Bilgi Alabilir miyim?</span>
+  </a>
+</div>
+
+
+
+  <!-- custom js link -->
+  <script src="./assets/js/script.js"></script>
+
+
+  <!-- ionicon link -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const newsletterForm = document.getElementById("newsletterForm");
+      const newsletterMessage = document.getElementById("newsletterMessage");
+  
+      newsletterForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+  
+        const emailInput = newsletterForm.querySelector('input[name="email"]');
+        const email = emailInput.value.trim();
+  
+        if (validateEmail(email)) {
+          // Realtime Database'a e-posta kaydet
+          database.ref("newsletterSubscribers").push({
+            email: email,
+            subscribedAt: Date.now(), // Timestamp
+          })
+          .then(() => {
+            newsletterMessage.textContent = "Başarıyla abone oldunuz!";
+            newsletterMessage.style.color = "green";
+            newsletterForm.reset();
+          })
+          .catch((error) => {
+            console.error("Belge ekleme hatası: ", error);
+            newsletterMessage.textContent = "Bir hata oluştu. Lütfen tekrar deneyin.";
+            newsletterMessage.style.color = "red";
+          });
+        } else {
+          newsletterMessage.textContent = "Lütfen geçerli bir e-posta adresi girin.";
+          newsletterMessage.style.color = "red";
+        }
+      });
+  
+      function validateEmail(email) {
+        // Basit e-posta doğrulama regex'i
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+    });
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tourListEl = document.getElementById("tourList");
+      const toursRef = database.ref("tours");
+  
+      toursRef.once("value", snapshot => {
+        const toursData = snapshot.val();
+        if (!toursData) return;
+  
+        // Tüm turların tek seferde eklenmesi
+        Object.keys(toursData).forEach(tourId => {
+          const tour = toursData[tourId];
+          const title = tour.title || "Tur Adı";
+          const price = tour.price || 0;
+          const rating = tour.rating || 0;   // Ortalama yıldız, örneğin 4.2
+          const reviewCount = tour.reviewCount || 0;
+          const imageUrl = tour.imageUrl || "./assets/images/balon-popular.jpg";
+  
+          // Kart HTML
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div class="popular-card">
+              <figure class="card-banner">
+                <a href="${tourId}.html">
+                  <img src="${imageUrl}" class="img-cover" alt="${title}">
+                </a>
+                <span class="card-badge">
+                  <ion-icon name="time-outline"></ion-icon>
+                  <time datetime="P1D">1 Gün</time>
+                </span>
+              </figure>
+              <div class="card-content">
+                <div class="card-wrapper">
+                  <div class="card-price">${price}€’dan başlayan fiyatlarla</div>
+                  <div class="card-rating">
+                    ${renderStars(rating)}
+                    <span class="review-count">(${reviewCount})</span>
+                  </div>
+                </div>
+                <h3 class="card-title">
+                  <a href="${tourId}.html">${title}</a>
+                </h3>
+                <address class="card-location">Kapadokya, Türkiye</address>
+              </div>
+            </div>
+          `;
+          tourListEl.appendChild(li);
+        });
+      });
+    });
+  
+    /**
+     * renderStars(rating)
+     *
+     * Verilen ondalıklı rating değerine göre (ör. 4.2) tam yıldız (star), 
+     * gerekirse yarım yıldız (star-half) ve geri kalan boş yıldız (star-outline)
+     * üretir.
+     *
+     * Ionicons 5.5.2'de "star-half" ikonu bazı sürümlerde "star-half-sharp"
+     * veya "star-half-outline" olarak da gelebilir. Eğer "star-half" görünmüyorsa,
+     * lütfen ikon adını kontrol ediniz.
+     */
+    function renderStars(rating) {
+      let starHtml = "";
+      const fullStars = Math.floor(rating);
+      const fraction = rating - fullStars;
+      // Eğer kalan kesir 0.3 veya daha yüksek ve 0.8'den küçükse yarım yıldız gösterebiliriz
+      const halfStar = fraction >= 0.3 && fraction < 0.8;
+      // Eğer kalan kesir 0.8 veya daha büyükse, yuvarlayarak tam yıldız ekleyelim
+      const additionalFull = fraction >= 0.8 ? 1 : 0;
+      const totalFullStars = fullStars + additionalFull;
+      
+      for (let i = 1; i <= 5; i++) {
+        if (i <= totalFullStars) {
+          starHtml += `<ion-icon name="star"></ion-icon>`;
+        } else if (i === totalFullStars + 1 && !additionalFull && halfStar) {
+          // Eğer ek tam yıldız eklenmediyse ve yarım şart sağlanıyorsa
+          starHtml += `<ion-icon name="star-half"></ion-icon>`;
+        } else {
+          starHtml += `<ion-icon name="star-outline"></ion-icon>`;
+        }
+      }
+      return starHtml;
+    }
+    
+  </script>
+  
+  
+
+</body>
+
+</html>

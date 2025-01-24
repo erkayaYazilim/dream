@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dream Catcher - Blog Yazısı</title>
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+    <!-- Ana site stil dosyası -->
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <!-- Ek tasarım stil dosyası (Opsiyonel) -->
+    <link rel="stylesheet" href="./assets/css/styles2.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Firebase & app.js -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+    <script src="./assets/js/app.js"></script>
+
+    <!-- Inline CSS: Root, Header, Expanding Cards, Blog Yazısı -->
+    <style>
+      /* Root ve Genel Ayarlar */
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: 'Heebo', sans-serif;
+        line-height: 1.6;
+      }
+
+      /* HEADER (Mobil & Masaüstü) */
+      .header {
+        background: var(--viridian-green);
+        padding-block: 20px;
+        height: 88px;
+        overflow: hidden;
+        transition: 0.25s var(--cubic-out);
+      }
+      .header.active {
+        height: 425px;
+        transition-duration: 0.35s;
+      }
+      .header .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        color: var(--white-1);
+        font-size: var(--fs-2);
+        font-weight: var(--fw-600);
+      }
+      .nav-toggle-btn {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .nav-toggle-btn ion-icon {
+        color: var(--white-1);
+        font-size: 35px;
+        --ionicon-stroke-width: 40px;
+      }
+      .nav-toggle-btn .open {
+        display: block;
+      }
+      .nav-toggle-btn .close {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .open {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .close {
+        display: block;
+      }
+      .navbar {
+        width: 100%;
+        padding: 20px 10px;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-1);
+      }
+      .header.active .navbar {
+        opacity: 1;
+        visibility: visible;
+      }
+      .navbar-list {
+        margin-bottom: 15px;
+      }
+      .navbar-link {
+        color: var(--white-1);
+        font-size: var(--fs-5);
+        font-weight: var(--fw-500);
+        padding-block: 10px 0;
+        border-bottom: 2px solid transparent;
+      }
+      .navbar-link:is(:hover, :focus) {
+        border-color: var(--white-1);
+      }
+      @media screen and (min-width: 992px) {
+        .nav-toggle-btn {
+          display: none;
+        }
+        .header,
+        .header.active {
+          height: unset;
+        }
+        .navbar {
+          all: unset;
+          display: flex;
+          align-items: center;
+          flex-grow: 1;
+        }
+        .navbar-list {
+          margin-bottom: 0;
+          margin-inline: auto;
+          display: flex;
+          gap: 30px;
+        }
+        /* Kayan animasyon için kapsayıcı */
+      .whatsapp-container {
+        position: fixed;
+        left: 5px;
+        bottom: 5px;
+        z-index: 1000;
+        animation: slideIn 0.8s ease-out forwards;
+      }
+    
+      /* Butonun temel stil ve titreşim animasyonu */
+      .whatsapp-fixed {
+        background-color: #ffffff;
+        color: #25d366;
+        padding: 10px 15px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        animation: shake 3s ease-in-out infinite;
+      }
+    
+      .whatsapp-fixed:hover {
+        background-color: #1ebe5d;
+        transform: scale(1.05);
+      }
+    
+      .whatsapp-fixed img {
+        width: 24px;
+        height: 24px;
+      }
+    
+      .whatsapp-fixed span {
+        /* Mobilde metni gizleyip simge gösterilir */
+        display: none;
+      }
+    
+      @media (min-width: 768px) {
+        .whatsapp-fixed span {
+          display: inline;
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+    
+      /* Slide In Animasyonu: Kayan giriş efekti */
+      @keyframes slideIn {
+        from {
+          transform: translateX(-30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    
+      /* Shake Animasyonu: 3s'lik döngüde kısa titreşim */
+      @keyframes shake {
+        0%, 80%, 100% {
+          transform: translateX(0);
+        }
+        85% {
+          transform: translateX(-5px);
+        }
+        90% {
+          transform: translateX(5px);
+        }
+        95% {
+          transform: translateX(0);
+        }
+      }
+      }
+
+      /* Expanding Cards (Üst Görsel Kartlar) */
+      @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+      .container-expanding {
+        display: flex;
+        width: 90vw;
+        margin: 0 auto;
+      }
+      .panel {
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 40vh;
+        border-radius: 50px;
+        color: #fff;
+        cursor: pointer;
+        flex: 0.5;
+        margin: 10px;
+        position: relative;
+        transition: all 700ms ease-in;
+      }
+      .panel h3 {
+        font-size: 24px;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        margin: 0;
+        opacity: 0;
+      }
+      .panel.active {
+        flex: 5;
+      }
+      .panel.active h3 {
+        opacity: 1;
+        transition: opacity 0.3s ease-in 0.4s;
+      }
+      @media (max-width: 480px) {
+        .container-expanding {
+          width: 100vw;
+        }
+        .panel:nth-of-type(4),
+        .panel:nth-of-type(5) {
+          display: none;
+        }
+      }
+
+      /* Blog Yazısı İçeriği Bölümü */
+      .blog-article-section {
+        position: relative;
+        background: url('./assets/images/transparent-bg.png') no-repeat center center/cover;
+        padding: 80px 0;
+        background-color: white;
+      }
+      .blog-article-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.4);
+        z-index: 1;
+      }
+      .blog-article-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .blog-article-content h1,
+      .blog-article-content h2,
+      .blog-article-content h3,
+      .blog-article-content p {
+        margin-bottom: 20px;
+      }
+      .article-meta {
+        font-size: 1.2rem;
+        color: #080808;
+        margin-bottom: 30px;
+      }
+
+ 
+
+
+    </style>
+  </head>
+  <body id="top">
+    <!-- HEADER -->
+    <header class="header" data-header>
+      <div class="container">
+        <a href="index.html" class="logo-link" style="display: flex; align-items: center; gap: 10px;">
+          <img src="favicon.svg" alt="Dream Catcher Logo" style="width: 40px; height: auto;">
+          <h1 class="logo" style="margin: 0; font-size: 24px; color: #fff;">Dream Catcher</h1>
+        </a>
+        <!-- Hamburger Butonu -->
+        <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+          <ion-icon name="menu-outline" class="open"></ion-icon>
+          <ion-icon name="close-outline" class="close"></ion-icon>
+        </button>
+        <!-- Navbar -->
+        <nav class="navbar">
+          <ul class="navbar-list">
+            <!-- Menü linkleri ilgili bölüm id'lerine yönlendiriliyor -->
+            <li><a href="index.html" class="navbar-link">Anasayfa</a></li>
+            <li><a href="index.html#about" class="navbar-link">Hakkımızda</a></li>
+            <li><a href="index.html#popular" class="navbar-link">Turlar</a></li>
+            <li><a href="index.html#destination" class="navbar-link">Aktiviteler</a></li>
+            <li><a href="index.html#blog" class="navbar-link">Blog</a></li>
+            <li><a href="index.html#footer" class="navbar-link">İletişim</a></li>
+          </ul>
+          <!-- Hemen Rezervasyon butonu; WhatsApp üzerinden rezervasyon yapmak için hazır mesaj gönderir -->
+          <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20rezervasyon%20yaptırmak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" class="btn btn-secondary">Hemen Rezervasyon</a>
+  
+        </nav>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="section hero" style="background-image: url('./assets/images/blog-hero.jpg'); background-size: cover;">
+      <div class="container">
+        <div class="hero-content">
+          <p class="section-subtitle">En Yeni Blog Yazısı</p>
+          <h2 class="hero-title">Spa & Masaj ile Yenilenmenin Püf Noktaları</h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPANDING CARDS -->
+    <section class="expanding-cards-section">
+      <div class="container-expanding">
+        <div class="panel active" style="background-image: url('assets/images/spa1.jpg')">
+          <h3>Aromaterapi Masajı</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/spa2.jpg')">
+          <h3>Gevşeme Seansı</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/spa3.jpg')">
+          <h3>Derin Doku</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/spa4.jpg')">
+          <h3>Refleksoloji Terapisi</h3>
+        </div>
+        <div class="panel" style="background-image: url('assets/images/spa5.jpg')">
+          <h3>Sıcak Taş</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG İÇERİĞİ -->
+    <section class="blog-article-section">
+      <div class="blog-article-overlay"></div>
+      <div class="container">
+        <div class="blog-article-content">
+          <header>
+            <h1 class="article-title">Spa & Masaj ile Yenilenmenin Püf Noktaları</h1>
+            <p class="article-meta">
+              <time datetime="2025-04-10">10 Ocak 2025</time> &mdash; Yazar: <strong>Murat Demir</strong>
+            </p>
+          </header>
+          <figure class="article-banner">
+            <img src="./assets/images/spa.jpg" alt="Spa & Masaj" class="img-cover" />
+            <figcaption>Ruhunuzu ve bedeninizi yenilemenin sırrı: Spa & Masaj.</figcaption>
+          </figure>
+          <section class="article-content">
+            <p>
+              Günlük hayatın koşuşturmacası ve stresinin arasında, bedeninize ve ruhunuza hak ettiği özeni göstermek; belki de en değerli armağanımızdır. Spa & masaj, modern yaşamın getirdiği yorgunluğu, zihinsel ve fiziksel tıkanıklıkları dağıtmanın en etkili yollarından biri olarak karşımıza çıkıyor. Farklı teknikler, doğal ürünler ve sakinleştirici atmosferler, sizi sadece gevşetmekle kalmaz, aynı zamanda yaşam enerjinizi de tazeler.
+            </p>
+            <h2>I. Spa ve Masajın Büyülü Dünyası</h2>
+            <p>
+              Spa terapileri ve masaj uygulamaları, antik çağlardan beri hem bedeni hem de ruhu şifalandıran ritüellerin temelini oluşturmuştur. Doğal bitki özleri, mineral zenginlikleri ve terapötik dokunuşlar, vücudunuzun dengesini yeniden kurarken, zihninizi temizler.
+            </p>
+            <p>
+              Modern spa merkezleri, yalnızca lüks bir konfor değil; aynı zamanda kişiye özel programlar, holistik yaklaşımlar ve kişisel yenilenme sürecinin kapılarını aralıyor. Masaj teknikleri arasında İsveç masajı, derin doku masajı, aromaterapi masajı, sıcak taş terapisi gibi birçok farklı yöntem bulunuyor. Her biri, bedeninizde biriken stresi ve gerginliği çözmek için özenle tasarlanmıştır.
+            </p>
+            <h2>II. Seans Öncesi Hazırlık: Bedeninizi ve Zihninizi Açın</h2>
+            <p>
+              Spa ve masaj seansına başlamadan önce yapmanız gereken en önemli şey, ruhunuzu ve bedeninizi hazırlamaktır. İşte, seans öncesinde dikkate almanız gereken bazı püf noktaları:
+            </p>
+            <ul>
+              <li><strong>Hafif Beslenme:</strong> Ağır yemeklerden uzak, seans öncesinde hafif ve sindirimi kolay besinler tüketmek, vücudunuzun gevşemesi için ideal bir ortam yaratır.</li>
+              <li><strong>Bol Su Tüketimi:</strong> Vücudunuzun toksinlerden arınabilmesi için seans öncesinde ve sonrasında bol su içmeyi unutmayın.</li>
+              <li><strong>Rahat Kıyafetler:</strong> Seansa uygun, rahat ve nefes alabilen giysiler tercih edin. Böylece, hem kendinizi daha iyi hissedersiniz hem de uygulamalar sırasında hareket özgürlüğünüz artar.</li>
+              <li><strong>Zihinsel Hazırlık:</strong> Meditasyon, derin nefes egzersizleri veya kısa bir yürüyüş ile seans öncesinde zihninizi sakinleştirin.</li>
+            </ul>
+            <h2>III. Seans Sırasında Yenilenme: Dokunuşların ve Aromaların Gücü</h2>
+            <p>
+              Spa ve masaj seansları sırasında, uygulayıcının ustalığı, kullanılan teknikler ve ortamın huzuru, sizi bambaşka bir boyuta taşır. Seans sırasında;
+            </p>
+            <ul>
+              <li><strong>Rahat Pozisyonda Olun:</strong> Masaj seansı boyunca, gevşemeyi sağlayacak pozisyonları alarak bedeninizin her noktasına odaklanın.</li>
+              <li><strong>Dokunuşlara Kulak Verin:</strong> Uygulayıcının parmak uçlarının, vücudunuzda bıraktığı nazik baskılara ve ritmik dokunuşlara odaklanın. Her dokunuş, sizi geçmişin stresinden arındırır.</li>
+              <li><strong>Aromaların Büyüsü:</strong> Kullanılan esansiyel yağların aroması, zihninizi sakinleştirirken, vücudunuzun enerji dengesini yeniden kurar. Özellikle lavanta, yasemin ve okaliptüs gibi doğal aromalar, rahatlamayı destekler.</li>
+              <li><strong>Seansın Ritmine Uyun:</strong> Masajın doğal akışına kendinizi bırakın; zamanın durduğunu, sadece bu anın var olduğunu hissedebilirsiniz.</li>
+            </ul>
+            <h2>IV. Seans Sonrası: Yenilenmenin ve Tazelenmenin İncileri</h2>
+            <p>
+              Seans bittikten sonra, vücudunuz ve zihniniz hem fiziksel hem de duygusal olarak yenilenmiş halde olur. Ancak bu deneyimi daha da kalıcı kılmak için yapmanız gerekenler var:
+            </p>
+            <ul>
+              <li><strong>Dinlenme:</strong> Seans sonrasında hemen hareket etmek yerine, birkaç dakika yatarak ya da sessizce oturarak bedeninizin tepkilerini hissedin.</li>
+              <li><strong>Bol Su İçin:</strong> Su tüketimi, masajın etkilerini artırır ve vücudunuzdaki toksinlerin atılmasına yardımcı olur.</li>
+              <li><strong>Hafif Atıştırmalıklar:</strong> Seans sonrası hafif meyveler veya sağlıklı atıştırmalıklar, enerji seviyenizi dengeler.</li>
+              <li><strong>Kendi Kendinize Düşünün:</strong> Bu deneyimi, günlük yaşantınızda nasıl uygulayabileceğinizi düşünün. Masajın getirdiği huzuru ve yenilenmeyi yaşamınıza entegre edin.</li>
+            </ul>
+            <h2>V. Ek İpuçları ve İleri Düzey Yenilenme Stratejileri</h2>
+            <p>
+              Spa ve masaj deneyiminizi daha da derinleştirmek ve kişisel yenilenme sürecinizi maksimuma çıkarmak için bazı ileri düzey stratejileri de uygulayabilirsiniz:
+            </p>
+            <ul>
+              <li><strong>Düzenli Seanslar:</strong> Haftada ya da ayda bir düzenli olarak spa ve masaj seanslarına katılarak, bedeninizde ve zihninizde sürekli bir yenilenme sağlayın.</li>
+              <li><strong>Kendi Ritüelinizi Oluşturun:</strong> Evde de uygulayabileceğiniz basit masaj teknikleri, meditasyon seansları ve aromaterapi ritüelleri geliştirin. Bu, günlük yaşamın stresini azaltmanın en etkili yollarından biridir.</li>
+              <li><strong>Farklı Teknikleri Keşfedin:</strong> Yoga, Tai Chi veya derin nefes egzersizleri gibi tamamlayıcı disiplinleri öğrenerek, spa deneyiminizi bütünleyici bir hale getirin.</li>
+              <li><strong>Profesyonellerle İletişim:</strong> Spa merkezlerinde çalışan terapistlerle birebir görüşmeler yaparak, size en uygun uygulamaları ve ürünleri öğrenin. Bu, kişisel ihtiyaçlarınıza yönelik özelleştirilmiş bir program oluşturmanıza yardımcı olacaktır.</li>
+            </ul>
+            <h2>VI. Spa & Masajın Ruhunu Keşfetmek</h2>
+            <p>
+              Spa ve masaj yalnızca bedeninize yapılan bir müdahale değildir; aynı zamanda ruhunuzu şifalandıran, zihninizi sakinleştiren ve sizi yeniden doğmuş gibi hissettiren mistik bir deneyimdir. Bu ritüeller, günün telaşı içerisinde kendinizi unuttuğunuz anlarda bile sizi yeniden bulmanıza yardımcı olur.
+            </p>
+            <p>
+              Doğal dokunuşların, sıcak taş terapilerinin ve aromaların harmanı; sizi hem fiziksel hem de duygusal olarak gevşetir. Kendinize bu zamanı ayırın; stres dolu günlerden sıyrılarak, kendinizi yeniden keşfetmenin ve ruhunuzu beslemenin tadını çıkarın.
+            </p>
+            <h2>Son Söz: Yenilenmenin ve İçsel Dengenin Kapılarını Aralamak</h2>
+            <p>
+              Spa & masaj seansları, modern yaşamın stresini bir nebze olsun silip süpüren, size kendinizle olan bağlarınızı yeniden kurma fırsatı veren eşsiz deneyimlerdir. Hazırlık aşamasından seans sonrası dinlenmeye kadar, her adımda bedeninize ve ruhunuza gösterdiğiniz özen, yaşam kalitenizi artırır.
+            </p>
+            <p>
+              Unutmayın, gerçek yenilenme sadece dışsal bir müdahale değil; aynı zamanda içsel dengenizi, farkındalığınızı ve kendinize duyduğunuz saygıyı da beraberinde getirir. Bu yüzden, her spa & masaj seansınızı bir adım öteye taşıyarak, yaşamınızda kalıcı bir dönüşüm yaratın.
+            </p>
+            <p>
+              Kendi ritüelinizi oluşturun, bedeninizin sesini dinleyin ve bu benzersiz deneyimi ruhunuza işleyin. Çünkü yenilenmek, hayatın en değerli armağanlarından biridir.
+            </p>
+          </section>
+          <footer class="article-footer">
+            <p class="article-tags">
+              Etiketler:
+              <a href="#">Spa</a>,
+              <a href="#">Masaj</a>,
+              <a href="#">Yenilenme</a>,
+              <a href="#">Detoks</a>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" style="background-image: url('./assets/images/footer-bg.png')">
+      <div class="container">
+        <div class="footer-top">
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Popüler Aktiviteler</p></li>
+            <li><a href="#" class="footer-link">Balon Turları</a></li>
+            <li><a href="#" class="footer-link">At Turları</a></li>
+            <li><a href="#" class="footer-link">ATV Turları</a></li>
+            <li><a href="#" class="footer-link">Jeep Safari</a></li>
+            <li><a href="#" class="footer-link">Klasik Araba Turları</a></li>
+            <li><a href="#" class="footer-link">Spa & Masaj</a></li>
+          </ul>
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Kategoriler</p></li>
+            <li><a href="#" class="footer-link">Macera</a></li>
+            <li><a href="#" class="footer-link">Kültür & Tarih</a></li>
+            <li><a href="#" class="footer-link">Doğa</a></li>
+            <li><a href="#" class="footer-link">Aile</a></li>
+            <li><a href="#" class="footer-link">Romantik</a></li>
+          </ul>
+          <ul class="footer-list">
+            <li><p class="footer-list-title">Hızlı Erişim</p></li>
+            <li><a href="#" class="footer-link">Hakkımızda</a></li>
+            <li><a href="#" class="footer-link">İletişim</a></li>
+            <li><a href="#" class="footer-link">Turlar</a></li>
+            <li><a href="#" class="footer-link">Rezervasyon</a></li>
+            <li><a href="#" class="footer-link">Şartlar & Koşullar</a></li>
+          </ul>
+          <div class="footer-list">
+            <p class="footer-list-title">Bültene Kaydol</p>
+            <p class="newsletter-text">
+              Son fırsatlar, haberler ve ipuçları için mail ile bilgilendirme almak için bültenimize abone olun.
+            </p>
+            <form id="newsletterForm" class="newsletter-form">
+              <input type="email" name="email" required placeholder="E-posta adresi" class="newsletter-input">
+              <button type="submit" class="btn btn-primary">Abone Ol</button>
+            </form>
+            <p id="newsletterMessage" class="form-info"></p>
+          </div>
+          
+        </div>
+        <div class="footer-bottom">
+          <a href="#" class="logo">Dream Catcher</a>
+          <p class="copyright">
+            &copy; 2025 <a href="#" class="copyright-link">DreamCatcher</a>. Tüm Hakları Saklıdır.
+          </p>
+          <ul class="social-list">
+            <li><a href="#" class="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-twitter"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-linkedin"></ion-icon></a></li>
+            <li><a href="#" class="social-link"><ion-icon name="logo-google"></ion-icon></a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <!-- GO TO TOP -->
+    <div class="whatsapp-container">
+      <a href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20üzerinden%20iletişim%20sağladım.%20Kapadokya%20turları%20ve%20aktiviteleri%20hakkında%20detaylı%20bilgi%20almak%20istiyorum.%20Yardımcı%20olabilir%20misiniz?" target="_blank"
+        class="whatsapp-fixed" aria-label="WhatsApp ile iletişime geçin">
+        <!-- WhatsApp simgenizin dosya yolunu güncelleyiniz -->
+        <img src="./assets/images/wplogo.png" alt="WhatsApp">
+        <span>Bilgi Alabilir miyim?</span>
+      </a>
+    </div>
+
+    <!-- Custom JS Link -->
+ 
+
+    <!-- Mobil Menü Açma/Kapatma JS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const navToggleBtn = document.querySelector("[data-nav-toggle-btn]");
+        const headerEl = document.querySelector("[data-header]");
+        const openIcon = document.querySelector(".nav-toggle-btn .open");
+        const closeIcon = document.querySelector(".nav-toggle-btn .close");
+        const navbar = document.querySelector(".navbar");
+  
+        if (navToggleBtn && headerEl) {
+          navToggleBtn.addEventListener("click", () => {
+            headerEl.classList.toggle("active");
+            if (navbar.style.display === "flex") {
+              navbar.style.display = "none";
+              openIcon.style.display = "inline";
+              closeIcon.style.display = "none";
+            } else {
+              navbar.style.display = "flex";
+              openIcon.style.display = "none";
+              closeIcon.style.display = "inline";
+            }
+          });
+        }
+      });
+    </script>
+    </script>
+
+    <!-- Expanding Cards JS -->
+    <script>
+      const panels = document.querySelectorAll(".panel");
+      panels.forEach(panel => {
+        panel.addEventListener("click", () => {
+          panels.forEach(p => p.classList.remove("active"));
+          panel.classList.add("active");
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const newsletterForm = document.getElementById("newsletterForm");
+        const newsletterMessage = document.getElementById("newsletterMessage");
+    
+        newsletterForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+    
+          const emailInput = newsletterForm.querySelector('input[name="email"]');
+          const email = emailInput.value.trim();
+    
+          if (validateEmail(email)) {
+            // Realtime Database'a e-posta kaydet
+            database.ref("newsletterSubscribers").push({
+              email: email,
+              subscribedAt: Date.now(), // Timestamp
+            })
+            .then(() => {
+              newsletterMessage.textContent = "Başarıyla abone oldunuz!";
+              newsletterMessage.style.color = "green";
+              newsletterForm.reset();
+            })
+            .catch((error) => {
+              console.error("Belge ekleme hatası: ", error);
+              newsletterMessage.textContent = "Bir hata oluştu. Lütfen tekrar deneyin.";
+              newsletterMessage.style.color = "red";
+            });
+          } else {
+            newsletterMessage.textContent = "Lütfen geçerli bir e-posta adresi girin.";
+            newsletterMessage.style.color = "red";
+          }
+        });
+    
+        function validateEmail(email) {
+          // Basit e-posta doğrulama regex'i
+          const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return re.test(email);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dream Catcher - Jeep Safari Turu Detayı</title>
+
+  <!-- favicon -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml" />
+
+  <!-- Ana site style.css -->
+  <link rel="stylesheet" href="./assets/css/style.css" />
+  <!-- styles2.css: Ek tasarımlar (Opsiyonel) -->
+  <link rel="stylesheet" href="./assets/css/styles2.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Comforter+Brush&family=Heebo:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Ionicons -->
+  <script
+    type="module"
+    src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"
+  ></script>
+  <script
+    nomodule
+    src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"
+  ></script>
+
+  <!-- Firebase & app.js (Firebase yapılandırmanızı app.js içinde yapınız) -->
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+  <script src="./assets/js/app.js"></script>
+
+  <style>
+    /* --- WHATSAPP BUTONU ve ANİMASYONLAR --- */
+    .whatsapp-container {
+      position: fixed;
+      left: 5px;
+      bottom: 5px;
+      z-index: 1000;
+      animation: slideIn 0.8s ease-out forwards;
+    }
+    .whatsapp-fixed {
+      background-color: #ffffff;
+      color: #25d366;
+      padding: 10px 15px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      animation: shake 3s ease-in-out infinite;
+    }
+    .whatsapp-fixed:hover {
+      background-color: #1ebe5d;
+      transform: scale(1.05);
+    }
+    .whatsapp-fixed img {
+      width: 24px;
+      height: 24px;
+    }
+    .whatsapp-fixed span {
+      display: none;
+    }
+    @media (min-width: 768px) {
+      .whatsapp-fixed span {
+        display: inline;
+        font-size: 16px;
+        font-weight: 600;
+      }
+    }
+
+    /* Slide In Animasyonu */
+    @keyframes slideIn {
+      from {
+        transform: translateX(-30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    /* Shake Animasyonu */
+    @keyframes shake {
+      0%,
+      80%,
+      100% {
+        transform: translateX(0);
+      }
+      85% {
+        transform: translateX(-5px);
+      }
+      90% {
+        transform: translateX(5px);
+      }
+      95% {
+        transform: translateX(0);
+      }
+    }
+
+    /* --- TUR BİLGİLERİ --- */
+    .tour-info-section {
+      background-color: #fafafa;
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+    .tour-meta-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .tour-meta-box h4 {
+      margin-bottom: 0.5rem;
+      color: #555;
+    }
+    .value-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f1c40f; /* Sarı */
+    }
+    .euro-symbol,
+    .puan-simge {
+      margin-left: 0.3rem;
+      font-size: 1rem;
+      color: #f1c40f;
+    }
+
+    /* --- TABLO TASARIMI (MASAÜSTÜ) --- */
+    .tour-table-container {
+      overflow-x: auto;
+      margin: 2rem 0;
+      padding: 0 1rem;
+    }
+    .tour-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .tour-table thead {
+      background-color: #f1c40f;
+      color: #fff;
+    }
+    .tour-table th,
+    .tour-table td {
+      text-align: center;
+      padding: 12px 15px;
+      border: 1px solid #f1c40f;
+    }
+    .tour-table th {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tour-table tbody tr:nth-child(even) {
+      background-color: #fffbe6; /* Hafif sarı */
+    }
+    .tour-table tbody tr:hover {
+      background-color: #f9e79f; /* Hover efekti */
+    }
+    .tour-table .price {
+      color: #000000;
+      font-weight: 700;
+    }
+
+    /* --- FİYAT SATIRI --- */
+    .price-row {
+      background-color: #000000; 
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* --- GÜZERGAH RESMİ VE AÇIKLAMA --- */
+    .route-image {
+      width: 100%;
+      max-width: 700px;
+      display: block;
+      margin: 0 auto 1rem auto;
+      border-radius: 8px;
+      border: 3px solid #f1c40f;
+    }
+    .tour-desc-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      line-height: 1.8;
+    }
+    .tour-desc-section h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+
+    /* --- SSS (FAQ) --- */
+    .faq-section {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 1rem;
+    }
+    .faq-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+    }
+    .faq-item {
+      margin-bottom: 1.2rem;
+      border: 1px solid #f1c40f;
+      padding: 1rem;
+      border-radius: 8px;
+      background-color: #fffbe6;
+      transition: background-color 0.3s ease;
+    }
+    .faq-item:hover {
+      background-color: #f9e79f;
+    }
+    .faq-item h4 {
+      font-size: 1.1rem;
+      margin: 0 0 0.5rem 0;
+      color: #555;
+    }
+
+    @media (max-width: 768px) {
+      /* Navbar mobil */
+      .nav-toggle-btn {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+      .nav-toggle-btn ion-icon {
+        color: var(--white-1);
+        font-size: 35px;
+        --ionicon-stroke-width: 40px;
+      }
+      .nav-toggle-btn .open {
+        display: block;
+      }
+      .nav-toggle-btn .close {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .open {
+        display: none;
+      }
+      .header.active .nav-toggle-btn .close {
+        display: block;
+      }
+      .navbar {
+        width: 100%;
+        padding: 20px 10px;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition-1);
+      }
+      .header.active .navbar {
+        opacity: 1;
+        visibility: visible;
+      }
+      .navbar-list {
+        margin-bottom: 15px;
+      }
+      .navbar-link {
+        color: var(--white-1);
+        font-size: var(--fs-5);
+        font-weight: var(--fw-500);
+        padding-block: 10px 0;
+        border-bottom: 2px solid transparent;
+      }
+      .navbar-link:is(:hover, :focus) {
+        border-color: var(--white-1);
+      }
+    }
+  </style>
+</head>
+<body id="top">
+
+  <!-- HEADER -->
+  <header class="header" data-header>
+    <div class="container">
+      <a href="index.html" class="logo-link" style="display: flex; align-items: center; gap: 10px;">
+        <img src="favicon.svg" alt="Dream Catcher Logo" style="width: 40px; height: auto;" />
+        <h1 class="logo" style="margin: 0; font-size: 24px; color: #fff;">Dream Catcher</h1>
+      </a>
+      <!-- Hamburger Butonu -->
+      <button class="nav-toggle-btn" data-nav-toggle-btn aria-label="Toggle Menu">
+        <ion-icon name="menu-outline" class="open"></ion-icon>
+        <ion-icon name="close-outline" class="close"></ion-icon>
+      </button>
+      <nav class="navbar">
+        <ul class="navbar-list">
+          <li><a href="index.html" class="navbar-link">Anasayfa</a></li>
+          <li><a href="index.html#about" class="navbar-link">Hakkımızda</a></li>
+          <li><a href="index.html#popular" class="navbar-link">Turlar</a></li>
+          <li><a href="index.html#destination" class="navbar-link">Aktiviteler</a></li>
+          <li><a href="index.html#blog" class="navbar-link">Blog</a></li>
+          <li><a href="index.html#footer" class="navbar-link">İletişim</a></li>
+        </ul>
+        <!-- Hemen Rezervasyon Butonu -->
+        <a
+          href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20%C3%BCzerinden%20ileti%C5%9Fim%20sa%C4%9Flad%C4%B1m.%20Kapadokya%20turlar%C4%B1%20ve%20aktiviteleri%20hakk%C4%B1nda%20rezervasyon%20yapt%C4%B1rmak%20istiyorum.%20Yard%C4%B1mc%C4%B1%20olabilir%20misiniz?"
+          class="btn btn-secondary"
+        >
+          Hemen Rezervasyon
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ARKA PLAN VİDEO -->
+  <section class="tour-hero">
+    <video id="bgVideo" autoplay muted loop playsinline></video>
+    <div class="tour-hero-overlay">
+      <h2 id="tourTitle">Jeep Safari Turu Yükleniyor...</h2>
+    </div>
+  </section>
+
+  <!-- Kısa Tur Bilgileri -->
+  <section class="tour-info-section">
+    <div class="tour-meta-wrap">
+
+      <div class="tour-meta-box">
+        <h4>Puan</h4>
+        <div class="value-wrap">
+          <span class="main-value" id="tourRating">--</span>
+          <span class="puan-simge">/ 5</span>
+        </div>
+      </div>
+      <div class="tour-meta-box">
+        <h4>Yorumlar</h4>
+        <span class="main-value" id="tourReviewCount">--</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detaylı Açıklama -->
+  <section class="tour-desc-section container" style="margin-top: 2rem;">
+    <h2>Jeep Safari Turu Hakkında Detaylı Açıklama</h2>
+    <p>
+      Kapadokya jeep safari turumuzun süresi 2-3 saat olarak değişkenlik göstermektedir. Standart olarak düzenlediğimiz turlarımızın süresi 2 saattir. Fakat sizlere yemekli ve 4 saatlik farklı turlarda düzenlemekteyiz. Hem müze girişlerinin olduğu hem de öğlen yemek programının dahil olduğu turlarımız bulunmaktadır.
+    </p>
+    <p>
+      Standart olarak Kapadokya’da jeep turlarımız 2 saat yapılmaktadır. Fakat bazı durumlarda sizlerden gelen isteğe göre tur saatlerimizi uzatmaktayız. 2-3-6 saatlik turlarımızda yapılmaktadır. Bazı tur misafirlerimiz Kapadokya Kırmızı Tur ya da Kapadokya Yeşil Tur rotasını jeep’ler ile yapmak istemektedirler. Bu gibi durumlarda saat süresi uzun olacağından bu gibi turlarımızı yeni jeep’lerimiz ile yapmaktayız. Klimalı olduklarından sizlerin konforu daha ön planda olmaktadır.
+    </p>
+  </section>
+
+  <!-- Tur Zamanları ve Fiyat Tablosu -->
+  <section class="routes-section container" style="margin-top: 2rem;">
+    <h2>Tur Zamanları ve Fiyatlar</h2>
+    <div class="tour-table-container">
+      <table class="tour-table">
+        <thead>
+          <tr>
+            <th>Tur Zamanı</th>
+            <th>2 Saatlik Tur</th>
+            <th>4 Saatlik Tur</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Tur Zamanı">Gün Doğumu</td>
+            <!-- Statik fiyat yerine "-" veya "--" yazar, ID atarız -->
+            <td data-label="2 Saatlik Tur" class="price" id="priceGunDogumu2saat">--</td>
+            <td data-label="4 Saatlik Tur" class="price" id="priceGunDogumu4saat">--</td>
+          </tr>
+          <tr>
+            <td data-label="Tur Zamanı">Gün Batımı</td>
+            <td data-label="2 Saatlik Tur" class="price" id="priceGunBatimi2saat">--</td>
+            <td data-label="4 Saatlik Tur" class="price" id="priceGunBatimi4saat">--</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem;">
+      Kapadokya'nın en özel tur zamanları ve seçenekleri yukarıdaki tabloda listelenmiştir.
+      Seçtiğiniz tura göre uygun fiyatlar belirtilmiştir.
+    </p>
+  </section>
+
+  <!-- Sıkça Sorulan Sorular -->
+  <section class="faq-section">
+    <h2>Sıkça Sorulan Sorular</h2>
+    <div class="faq-item">
+      <h4>1) Jeep safari turuna katılmak için deneyimim olmasa da uygun mudur?</h4>
+      <p>
+        Evet, jeep safari turumuza deneyimsiz katılımcılar da dahil olabilir. Turlarımız, her seviyeden sürücünün rahatça katılabileceği şekilde planlanmıştır. Profesyonel rehberlerimiz, güvenliğiniz ve konforunuz için gerekli tüm bilgileri sağlar.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>2) Tur süresi ne kadar?</h4>
+      <p>
+        Kapadokya jeep safari turumuzun süresi 2-3 saat olarak değişkenlik göstermektedir. Standart olarak düzenlediğimiz turlarımızın süresi 2 saattir. Fakat sizlere yemekli ve 4 saatlik farklı turlarda düzenlemekteyiz. İhtiyaçlarınıza göre 2, 3 veya 6 saatlik turlar da organize edebiliriz.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>3) Güvenlik ekipmanlarını kim sağlıyor?</h4>
+      <p>
+        Tur başlangıcında gerekli tüm güvenlik ekipmanları (kask, koruyucu çorap ve eldiven) tarafımızdan sağlanmaktadır. Jeep'lerimiz düzenli olarak kontrol edilmekte ve güvenli sürüş için gerekli tüm önlemler alınmaktadır.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>4) Yaş sınırı var mı?</h4>
+      <p>
+        Genellikle 18 yaş ve üzeri katılımcılar jeep safari turlarımıza katılabilir. 18 yaşından küçük katılımcılar, en az bir yetişkin gözetiminde turumuza katılabilirler. Yaş sınırları ve özel durumlar için rezervasyon sırasında bizimle iletişime geçebilirsiniz.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>5) Yanıma ne almalıyım?</h4>
+      <p>
+        Rahat kıyafetler, sağlam ayakkabılar ve hava koşullarına uygun dış giyim tercih etmeniz önerilir. Güneş kremi, şapka ve gözlük gibi güneş koruyucu ürünler yanınızda bulundurmanız faydalı olacaktır. Ayrıca, su ve atıştırmalıklar almak isteyebilirsiniz.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>6) Jeep'ler klimalı mı?</h4>
+      <p>
+        Evet, jeep'lerimiz klimalıdır. Bu sayede özellikle sıcak günlerde sürüş esnasında rahat bir deneyim yaşamanız sağlanmaktadır.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>7) Tur iptal veya değiştirme koşulları nelerdir?</h4>
+      <p>
+        İptal taleplerinizi tur tarihinden en az 24 saat önce bildirmeniz durumunda, ödemenizin %90'ını iade ediyoruz. Daha sonraki iptallerde ise ödemelerinizin iadesi yapılamamaktadır. Turunuzu değiştirmek isterseniz, müsaitlik durumuna bağlı olarak yardımcı olmaktan memnuniyet duyarız.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>8) Grup olarak tura katılabilir miyim?</h4>
+      <p>
+        Evet, grup halinde turlar düzenleyebiliriz. Gruplarınızın büyüklüğüne göre özel jeep'lerimizle konforlu bir tur deneyimi sunabiliriz. Grup turları için rezervasyon sırasında detayları paylaşmanız yeterlidir.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>9) Tur sırasında yemek molası veriliyor mu?</h4>
+      <p>
+        4 saatlik turlarımızda öğlen yemek programı dahil edilmektedir. Müzeleri ziyaret ettikten sonra güzel bir öğle yemeği molası verebilir ve Kapadokya'nın yerel lezzetlerini tadabilirsiniz.
+      </p>
+    </div>
+    <div class="faq-item">
+      <h4>10) Evcil hayvanımı getirebilir miyim?</h4>
+      <p>
+        Evcil hayvanların turlarımıza katılmasına izin verilmektedir, ancak bu durum özel düzenlemeler gerektirebilir. Lütfen rezervasyon öncesinde bizimle iletişime geçerek detayları paylaşın.
+      </p>
+    </div>
+  </section>
+
+  <!-- Hizmetler -->
+  <section class="container">
+    <div class="text">
+      <h2>We have the best services available for you!</h2>
+    </div>
+    <div class="rowitems">
+      <div class="container-box">
+        <div class="container-image">
+          <img src="assets/images/1a.jpg" alt="Flight Services" />
+        </div>
+        <h4>Flight Services</h4>
+        <p>Arrival and Departure</p>
+      </div>
+      <div class="container-box">
+        <div class="container-image">
+          <img src="assets/images/2a.jpg" alt="Food Services" />
+        </div>
+        <h4>Food Services</h4>
+        <p>Catering</p>
+      </div>
+      <div class="container-box">
+        <div class="container-image">
+          <img src="assets/images/3a.jpg" alt="Travel Services" />
+        </div>
+        <h4>Travel Services</h4>
+        <p>Pick-up/drop</p>
+      </div>
+      <div class="container-box">
+        <div class="container-image">
+          <img src="assets/images/4a.jpg" alt="Hotel Services" />
+        </div>
+        <h4>Hotel Services</h4>
+        <p>Check-in/out</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Yorumlar -->
+  <section class="reviews-section">
+    <h3>Yorumlar</h3>
+    <ul id="reviewsList" class="reviews-list">
+      <!-- Örnek Onaylı Yorum -->
+      <li class="review-item">
+        <ion-icon name="person-circle-outline"></ion-icon>
+        <div class="review-content">
+          <div class="review-header">
+            <strong>Ayşe K.</strong>
+            <span class="review-stars">
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star"></ion-icon>
+              <ion-icon name="star-outline"></ion-icon>
+            </span>
+          </div>
+          <p class="review-text">
+            Muhteşem bir deneyimdi, özellikle gün batımında manzarası şahane!
+          </p>
+        </div>
+        <span class="review-date">10/07/2025</span>
+      </li>
+      <!-- Diğer onaylı yorumlar JS ile yüklenecek -->
+    </ul>
+  </section>
+
+  <!-- Yorum Ekleme Formu -->
+  <section class="review-form-section">
+    <h3>Yorum Yaz</h3>
+    <form id="reviewForm" class="review-form">
+      <label for="reviewerName">İsminiz:</label>
+      <input type="text" id="reviewerName" required />
+
+      <label for="serviceDate">Hizmet Alınan Tarih:</label>
+      <input type="date" id="serviceDate" required />
+
+      <label for="reviewStars">Puan (1-5):</label>
+      <select id="reviewStars" required>
+        <option value="1">1 Yıldız</option>
+        <option value="2">2 Yıldız</option>
+        <option value="3">3 Yıldız</option>
+        <option value="4">4 Yıldız</option>
+        <option value="5" selected>5 Yıldız</option>
+      </select>
+
+      <label for="reviewText">Yorumunuz:</label>
+      <textarea id="reviewText" rows="4" required></textarea>
+
+      <p class="form-info">
+        Yorumunuz, doğrulandıktan sonra görünecektir.
+      </p>
+
+      <button type="submit">Gönder</button>
+    </form>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" style="background-image: url('./assets/images/footer-bg.png')" id="footer">
+    <div class="container">
+      <div class="footer-top">
+        <ul class="footer-list">
+          <li><p class="footer-list-title">Popüler Aktiviteler</p></li>
+          <li><a href="#" class="footer-link">Balon Turları</a></li>
+          <li><a href="#" class="footer-link">At Turları</a></li>
+          <li><a href="#" class="footer-link">Jeep Safari Turları</a></li>
+          <li><a href="#" class="footer-link">Klasik Araba Turları</a></li>
+          <li><a href="#" class="footer-link">Spa & Masaj</a></li>
+        </ul>
+        <ul class="footer-list">
+          <li><p class="footer-list-title">Kategoriler</p></li>
+          <li><a href="#" class="footer-link">Macera</a></li>
+          <li><a href="#" class="footer-link">Kültür & Tarih</a></li>
+          <li><a href="#" class="footer-link">Doğa</a></li>
+          <li><a href="#" class="footer-link">Aile</a></li>
+          <li><a href="#" class="footer-link">Romantik</a></li>
+        </ul>
+        <ul class="footer-list">
+          <li><p class="footer-list-title">Hızlı Erişim</p></li>
+          <li><a href="#" class="footer-link">Hakkımızda</a></li>
+          <li><a href="#" class="footer-link">İletişim</a></li>
+          <li><a href="#" class="footer-link">Turlar</a></li>
+          <li><a href="#" class="footer-link">Rezervasyon</a></li>
+          <li><a href="#" class="footer-link">Şartlar & Koşullar</a></li>
+        </ul>
+        <div class="footer-list">
+          <p class="footer-list-title">Bültene Kaydol</p>
+          <p class="newsletter-text">
+            Son fırsatlar, haberler ve ipuçları için mail ile bilgilendirme almak için bültenimize abone olun.
+          </p>
+          <form id="newsletterForm" class="newsletter-form">
+            <input type="email" name="email" required placeholder="E-posta adresi" class="newsletter-input">
+            <button type="submit" class="btn btn-primary">Abone Ol</button>
+          </form>
+          <p id="newsletterMessage" class="form-info"></p>
+        </div>
+        
+      </div>
+      <div class="footer-bottom">
+        <a href="#" class="logo">Dream Catcher</a>
+        <p class="copyright">
+          &copy; 2025 <a href="#" class="copyright-link">DreamCatcher</a>. Tüm Hakları Saklıdır.
+        </p>
+        <ul class="social-list">
+          <li>
+            <a href="#" class="social-link"
+              ><ion-icon name="logo-facebook"></ion-icon
+            ></a>
+          </li>
+          <li>
+            <a href="#" class="social-link"
+              ><ion-icon name="logo-twitter"></ion-icon
+            ></a>
+          </li>
+          <li>
+            <a href="#" class="social-link"
+              ><ion-icon name="logo-instagram"></ion-icon
+            ></a>
+          </li>
+          <li>
+            <a href="#" class="social-link"
+              ><ion-icon name="logo-linkedin"></ion-icon
+            ></a>
+          </li>
+          <li>
+            <a href="#" class="social-link"
+              ><ion-icon name="logo-google"></ion-icon
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GO TO TOP -->
+  <a href="#top" class="go-top" data-go-top aria-label="Go To Top">
+    <ion-icon name="chevron-up-outline"></ion-icon>
+  </a>
+
+  <!-- WhatsApp Butonu -->
+  <div class="whatsapp-container">
+    <a
+      href="https://wa.me/905462419699?text=Merhaba,%20web%20siteleri%20%C3%BCzerinden%20ileti%C5%9Fim%20sa%C4%9Flad%C4%B1m.%20Kapadokya%20turlar%C4%B1%20ve%20aktiviteleri%20hakk%C4%B1nda%20detayl%C4%B1%20bilgi%20almak%20istiyorum.%20Yard%C4%B1mc%C4%B1%20olabilir%20misiniz?"
+      target="_blank"
+      class="whatsapp-fixed"
+      aria-label="WhatsApp ile iletişime geçin"
+    >
+      <img src="./assets/images/wplogo.png" alt="WhatsApp" />
+      <span>Bilgi Alabilir miyim?</span>
+    </a>
+  </div>
+
+  <!-- Firebase / Yorumlar JS -->
+  <script>
+    const tourId = "jeepSafari";  // Firebase'de "tours/jeepSafari" yoluna denk gelmeli.
+
+    // Firebase referansları
+    const tourRef = database.ref("tours/" + tourId);
+    const reviewsRef = database.ref("reviews/" + tourId);
+
+    // HTML element referansları
+    const bgVideoEl = document.getElementById("bgVideo");
+    const tourTitleEl = document.getElementById("tourTitle");
+
+    const tourRatingEl = document.getElementById("tourRating");
+    const tourReviewCountEl = document.getElementById("tourReviewCount");
+    const reviewsListEl = document.getElementById("reviewsList");
+    const reviewForm = document.getElementById("reviewForm");
+
+    // Fiyat hücrelerini yakalayalım
+    const priceGunDogumu2saatEl = document.getElementById("priceGunDogumu2saat");
+    const priceGunDogumu4saatEl = document.getElementById("priceGunDogumu4saat");
+    const priceGunBatimi2saatEl = document.getElementById("priceGunBatimi2saat");
+    const priceGunBatimi4saatEl = document.getElementById("priceGunBatimi4saat");
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Tur verisini çek
+      tourRef.once("value", (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          // Video URL
+          if (data.videoUrl) {
+            bgVideoEl.src = data.videoUrl;
+          }
+          // Başlık, fiyat, puan, yorum sayısı
+          tourTitleEl.textContent = data.title || "Jeep Safari Turu";
+          tourRatingEl.textContent = data.rating || 0;
+          tourReviewCountEl.textContent = data.reviewCount || 0;
+
+          // Fiyatları doldurmak için:
+          if (data.priceDetails) {
+            // data.priceDetails.gunDogumu2saat => "50-120" gibi
+            priceGunDogumu2saatEl.textContent = data.priceDetails.gunDogumu2saat
+              ? data.priceDetails.gunDogumu2saat + " €"
+              : "--";
+
+            priceGunDogumu4saatEl.textContent = data.priceDetails.gunDogumu4saat
+              ? data.priceDetails.gunDogumu4saat + " €"
+              : "--";
+
+            priceGunBatimi2saatEl.textContent = data.priceDetails.gunBatimi2saat
+              ? data.priceDetails.gunBatimi2saat + " €"
+              : "--";
+
+            priceGunBatimi4saatEl.textContent = data.priceDetails.gunBatimi4saat
+              ? data.priceDetails.gunBatimi4saat + " €"
+              : "--";
+          }
+        }
+      });
+
+      // Yorumları çek
+      loadApprovedReviews();
+    });
+
+    // Onaylı yorumları listele
+    function loadApprovedReviews() {
+      reviewsListEl.innerHTML = "";
+      reviewsRef.once("value", (snapshot) => {
+        const allReviews = snapshot.val();
+        if (!allReviews) return;
+        const reviewKeys = Object.keys(allReviews);
+        const reviewArray = [];
+
+        // Onaylı yorumları topla
+        reviewKeys.forEach((key) => {
+          const rev = allReviews[key];
+          if (rev.approved === true) {
+            reviewArray.push({ ...rev, id: key });
+          }
+        });
+
+        // Tarihe göre (yeni üstte) sıralama
+        reviewArray.sort((a, b) => b.createdAt - a.createdAt);
+
+        // Listeye ekle
+        reviewArray.forEach((rev, index) => {
+          const li = document.createElement("li");
+          li.classList.add("review-item");
+          li.innerHTML = `
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <div class="review-content">
+              <div class="review-header">
+                <strong>${rev.reviewerName}</strong>
+                <span class="review-stars">${renderStars(rev.stars)}</span>
+              </div>
+              <p class="review-text">${rev.comment}</p>
+            </div>
+            <span class="review-date">${new Date(rev.createdAt).toLocaleDateString("tr-TR")}</span>
+          `;
+          // İlk 5 yorum görünür, geri kalanı gizli
+          if (index >= 5) {
+            li.style.display = "none";
+          }
+          reviewsListEl.appendChild(li);
+        });
+
+        // Daha fazlası butonu
+        if (reviewArray.length > 5) {
+          const showMoreButton = document.createElement("button");
+          showMoreButton.textContent = "Daha Fazlası";
+          showMoreButton.classList.add("load-more-btn");
+          showMoreButton.style.marginTop = "10px";
+          showMoreButton.addEventListener("click", () => {
+            const hiddenReviews = reviewsListEl.querySelectorAll("li.review-item:nth-child(n+6)");
+            hiddenReviews.forEach((item) => {
+              item.style.display = "flex";
+            });
+            showMoreButton.style.display = "none";
+          });
+          reviewsListEl.appendChild(showMoreButton);
+        }
+      });
+    }
+
+    // Yeni yorum ekle
+    reviewForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const nameVal = document.getElementById("reviewerName").value.trim();
+      const serviceDateVal = document.getElementById("serviceDate").value;
+      const starsVal = parseInt(document.getElementById("reviewStars").value);
+      const textVal = document.getElementById("reviewText").value.trim();
+
+      const newReview = {
+        reviewerName: nameVal,
+        serviceDate: serviceDateVal,
+        stars: starsVal,
+        comment: textVal,
+        approved: false, // Onay: admin tarafından verilir
+        createdAt: Date.now(),
+      };
+
+      reviewsRef
+        .push(newReview)
+        .then(() => {
+          alert("Yorumunuz kaydedildi, doğrulandıktan sonra görünecektir!");
+          reviewForm.reset();
+        })
+        .catch((err) => console.error("Yorum ekleme hatası:", err));
+    });
+
+    // Puan Yıldızlarını Göster
+    function renderStars(rating) {
+      let starHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          starHtml += `<ion-icon name="star"></ion-icon>`;
+        } else {
+          starHtml += `<ion-icon name="star-outline"></ion-icon>`;
+        }
+      }
+      return starHtml;
+    }
+  </script>
+
+  <!-- Mobil Menü Açma/Kapatma -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const navToggleBtn = document.querySelector("[data-nav-toggle-btn]");
+      const headerEl = document.querySelector("[data-header]");
+
+      if (navToggleBtn && headerEl) {
+        navToggleBtn.addEventListener("click", () => {
+          headerEl.classList.toggle("active");
+        });
+      }
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const newsletterForm = document.getElementById("newsletterForm");
+      const newsletterMessage = document.getElementById("newsletterMessage");
+  
+      newsletterForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+  
+        const emailInput = newsletterForm.querySelector('input[name="email"]');
+        const email = emailInput.value.trim();
+  
+        if (validateEmail(email)) {
+          // Realtime Database'a e-posta kaydet
+          database.ref("newsletterSubscribers").push({
+            email: email,
+            subscribedAt: Date.now(), // Timestamp
+          })
+          .then(() => {
+            newsletterMessage.textContent = "Başarıyla abone oldunuz!";
+            newsletterMessage.style.color = "green";
+            newsletterForm.reset();
+          })
+          .catch((error) => {
+            console.error("Belge ekleme hatası: ", error);
+            newsletterMessage.textContent = "Bir hata oluştu. Lütfen tekrar deneyin.";
+            newsletterMessage.style.color = "red";
+          });
+        } else {
+          newsletterMessage.textContent = "Lütfen geçerli bir e-posta adresi girin.";
+          newsletterMessage.style.color = "red";
+        }
+      });
+  
+      function validateEmail(email) {
+        // Basit e-posta doğrulama regex'i
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+    });
+  </script>
+</body>
+</html>
